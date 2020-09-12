@@ -22,5 +22,9 @@ function documentEvents() {
     chrome.runtime.sendMessage({roomID: document.getElementById('room').value, name: document.getElementById('name').value});
   });
 
+  document.getElementById('clear').addEventListener('click', function() {
+    chrome.runtime.sendMessage({type: 'clear'});
+  });
+
   //other buttons possibly (here)
 }
