@@ -1,7 +1,7 @@
 
 document.addEventListener('DOMContentLoaded', documentEvents, false);
 
-function myAction(roomID, time, name) { 
+function submit(roomID, time, name) { 
     
     var t = time.value.split(":");
     
@@ -16,10 +16,10 @@ function myAction(roomID, time, name) {
 
 }
 
-function documentEvents() {    
+function submit() {    
   document.getElementById('submit').addEventListener('click', function() { 
-    myAction(document.getElementById('room'), document.getElementById('time'), document.getElementById('name'));
-    chrome.runtime.sendMessage({roomID: document.getElementById('room').value, name: document.getElementById('name').value});
+    submit(document.getElementById('room'), document.getElementById('time'), document.getElementById('name'));
+    chrome.runtime.sendMessage({type: 'submit', roomID: document.getElementById('room').value, name: document.getElementById('name').value});
   });
 
   document.getElementById('clear').addEventListener('click', function() {
