@@ -16,7 +16,7 @@ function submit(roomID, time, name) {
 
 }
 
-function submit() {    
+function documentEvents() {    
   document.getElementById('submit').addEventListener('click', function() { 
     submit(document.getElementById('room'), document.getElementById('time'), document.getElementById('name'));
     chrome.runtime.sendMessage({type: 'submit', roomID: document.getElementById('room').value, name: document.getElementById('name').value});
