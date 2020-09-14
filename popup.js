@@ -10,8 +10,8 @@ function submit(roomID, time, name) {
     d.setMinutes(parseInt(t[1]));
 
     //make the alarm
-    chrome.alarms.create(name.value, {when: d.getTime(), periodInMinutes: 1440});
-
+    var newAlarm = chrome.alarms.create(name.value, {when: d.getTime(), periodInMinutes: 1440});
+    
     
 
 }
