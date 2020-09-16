@@ -1,18 +1,17 @@
-
 chrome.storage.onChanged.addListener(function(changes, areaName) {
+    console.log("Changes to storage");
     console.log(changes);
 });
 
 chrome.alarms.onAlarm.addListener(function (alarm) {
     //we know the alarm name
     let theName = alarm.name;
+    console.log(theName);
     chrome.storage.local.get([theName], function(result) {
-        console.log(result);
         var theURL = result[theName];
-        console.log(theURL);
         chrome.tabs.create({url: theURL});
     });
-    
+    console.log("activated alarm " + theName);
 });
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -28,10 +27,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             // Notify that we saved.
             console.log("Saved with key " + newName + " and value " + newURL);
         });
-        console.log("created alarm " + newName);
+        chrome.alarms.getAll(function(alarms) {
+            console.log("All alarms currently");
+            console.log(alarms);
+        });
     }
     else if(request.type == 'clear') {
         chrome.alarms.clearAll();
+        console.log("Alarms cleared");
     }
 });
 

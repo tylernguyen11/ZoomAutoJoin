@@ -1,13 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <style>
-      button {
-        height: 30px;
-        width: 100px;
-        outline: none;
-      }
-    </style>
+    <link rel="stylesheet" href="style.css">
   </head>
   <body>
     <p>Meeting ID</p>
@@ -15,8 +9,21 @@
     <p>Name</p>
     <input id="name" type="text"></input>
     <p>Time</p>
-    <input id="time" type="time"></input>
+    <input id="time" type="time" value="00:00" style="width: 95px"></input>
+    <p></p>
+    <select name="days" id="days">
+      <option value=0>Sunday</option>
+      <option value=1>Monday</option>
+      <option value=2>Tuesday</option>
+      <option value=3>Wednesday</option>
+      <option value=4>Thursday</option>
+      <option value=5>Friday</option>
+      <option value=6>Saturday</option>
+    </select>
+    <p></p>
     <button id="submit">Schedule</button>
+    <p>Your Meetings</p>
+    <ul id="list"></ul>
     <button id="clear">Clear</button>
     <script type="text/javascript" src="popup.js"></script>
   </body>
