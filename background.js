@@ -35,8 +35,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             console.log("All alarms currently");
             console.log(alarms);
         });
-    }
-    else if(request.type == 'clear') {
+    } else if(request.type == 'clear') {
         chrome.alarms.clearAll();
         chrome.storage.local.set({LIST: []});
         console.log("Alarms cleared");

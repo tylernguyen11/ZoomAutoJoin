@@ -1,29 +1,33 @@
 document.addEventListener('DOMContentLoaded', documentEvents, false);
 
-function submit(time, name, schedDay, wordDay) { 
-  var d = new Date();
-  var currDay = d.getDay();
-  var dayHours = 0;
-  var t = time.value.split(":");
-  //the targeted hour and minute
-  var hour = parseInt(t[0]);
-  var minute = parseInt(t[1]);
-  if(hour <= d.getHours() && minute <= d.getMinutes()) {
-    //7 * 24
-    dayHours = 168;
-  }
-  else if(schedDay > currDay) {
-    dayHours = (schedDay - currDay) * 24;
-  }
-  else if(schedDay < currDay) {
-    dayHours = (7 - (currDay - schedDay)) * 24;
-  }
-  var t = time.value.split(":");
-  d.setHours(hour + dayHours);
-  d.setMinutes(minute);
-  //1 week = 10080 minutes
-  chrome.alarms.create(name + schedDay, {when: d.getTime(), periodInMinutes: 10080});
-  addToList(name, time.value, wordDay);
+function submit(time, name, schedDay, wordDay, id) { 
+  var storedName = name + schedDay;
+  chrome.alarms.get(storedName, function(alarm) {
+    if(alarm === undefined) {
+      var d = new Date();
+      var currDay = d.getDay();
+      var dayHours = 0;
+      var t = time.value.split(":");
+      //the targeted hour and minute
+      var hour = parseInt(t[0]);
+      var minute = parseInt(t[1]);
+      if(hour <= d.getHours() && minute <= d.getMinutes()) {
+        dayHours = 168; //7 * 24
+      } else if(schedDay > currDay) {
+        dayHours = (schedDay - currDay) * 24;
+      } else if(schedDay < currDay) {
+        dayHours = (7 - (currDay - schedDay)) * 24;
+      }
+      var t = time.value.split(":");
+      d.setHours(hour + dayHours);
+      d.setMinutes(minute);
+      chrome.alarms.create(storedName, {when: d.getTime(), periodInMinutes: 10080}); //1 week = 10080 minutes
+      addToList(name, time.value, wordDay);
+      chrome.runtime.sendMessage({type: 'submit', roomID: id, name: storedName});
+    } else {
+      alert("You cannot schedule multiple meetings with the same name on the same day");
+    }
+  });  
 }
 
 function addToList(name, time, day) {
@@ -76,7 +80,6 @@ function removeFromList(e) {
 
   //finally remove from the popup
   e.target.remove();
-  
 }
 
 function createListElement(text, list) {
@@ -97,21 +100,18 @@ function documentEvents() {
   });
 
   //submit button
-  document.getElementById('submit').addEventListener('click', function() { 
+  document.getElementById('submit').addEventListener('click', function() {
+    //if room.value ==  
     if(document.getElementById('room').value === '') {
       alert("You must enter an ID")
-    }
-    else if(document.getElementById('name').value === '') {
+    } else if(document.getElementById('name').value === '') {
       alert("You must enter a name");
-    }
-    else if(document.getElementById('name').value.indexOf(" - ") != -1) {
-      alert("Invalid name");
-    }
-    else {
+    } else if(document.getElementById('name').value.indexOf(" - ") != -1) {
+      alert("Invalid name. It cannot contain \" - \"");
+    } else {
       var e = document.getElementById("days");
       var schedDay = e.options[e.selectedIndex].value;
-      submit(document.getElementById('time'), document.getElementById('name').value, schedDay, e.options[e.selectedIndex].text);
-      chrome.runtime.sendMessage({type: 'submit', roomID: document.getElementById('room').value, name: document.getElementById('name').value + schedDay});
+      submit(document.getElementById('time'), document.getElementById('name').value, schedDay, e.options[e.selectedIndex].text, document.getElementById('room').value);
     }
   });
 
