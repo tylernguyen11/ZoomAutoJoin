@@ -1,10 +1,16 @@
+chrome.runtime.onInstalled.addListener(function() {
+    chrome.storage.local.set({LIST: []}, function() {
+        console.log("Initialized the LIST array");
+    });
+    chrome.alarms.clearAll();
+});
+
 chrome.storage.onChanged.addListener(function(changes, areaName) {
     console.log("Changes to storage");
     console.log(changes);
 });
 
 chrome.alarms.onAlarm.addListener(function (alarm) {
-    //we know the alarm name
     let theName = alarm.name;
     console.log(theName);
     chrome.storage.local.get([theName], function(result) {
@@ -15,8 +21,6 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
 });
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    //console.log("got message");
-
     if(request.type == 'submit') {
         var newURL = "\"https://zoom.com/j/" + request.roomID + "\"";
         var newName = "\"" + request.name + "\"";
@@ -34,6 +38,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
     else if(request.type == 'clear') {
         chrome.alarms.clearAll();
+        chrome.storage.local.set({LIST: []});
         console.log("Alarms cleared");
     }
 });
